@@ -17,7 +17,8 @@ import {
   X,
   ArrowRight,
   Play,
-  Aperture
+  Aperture,
+  Focus
 } from 'lucide-react';
 import { ServiceItem, ReasonItem } from './types';
 
@@ -100,6 +101,7 @@ function App() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [focusValue, setFocusValue] = useState(50); // 0 to 100
 
   useEffect(() => {
     const handleScroll = () => {
@@ -222,7 +224,7 @@ function App() {
           </div>
         </div>
 
-        {/* Floating Parallax Elements (New) */}
+        {/* Floating Parallax Elements */}
         <ParallaxFloatingItems x={mousePos.x} y={mousePos.y} />
 
         <div className="container mx-auto px-6 relative z-10 grid md:grid-cols-2 gap-12 items-center">
@@ -252,12 +254,38 @@ function App() {
             </div>
           </div>
 
-          <div 
-            className="flex justify-center items-center relative transition-transform duration-75 ease-out"
-            style={{ transform: `translate(${mousePos.x * -0.01}px, ${mousePos.y * -0.01}px)` }}
-          >
-            {/* The 3D Camera Element */}
-            <CameraLens />
+          <div className="flex flex-col items-center justify-center relative">
+            
+            {/* 3D Camera Element with Focus State */}
+            <div 
+              className="transition-transform duration-75 ease-out mb-8"
+              style={{ transform: `translate(${mousePos.x * -0.01}px, ${mousePos.y * -0.01}px)` }}
+            >
+              <CameraLens focusValue={focusValue} />
+            </div>
+
+            {/* Manual Focus Control */}
+            <div className="relative z-30 bg-black/60 backdrop-blur-md p-4 rounded-xl border border-white/10 w-64 shadow-2xl transform transition-all hover:scale-105 hover:border-admox-green/50 group">
+               <div className="flex justify-between items-center mb-2">
+                  <span className="text-[10px] text-admox-yellow font-mono tracking-widest uppercase flex items-center gap-1">
+                    <Focus size={12} /> Manual Focus
+                  </span>
+                  <span className="text-[10px] text-white font-mono">{focusValue}%</span>
+               </div>
+               <input 
+                  type="range" 
+                  min="0" 
+                  max="100" 
+                  value={focusValue} 
+                  onChange={(e) => setFocusValue(Number(e.target.value))}
+                  className="w-full h-1.5 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-admox-green focus:outline-none focus:ring-1 focus:ring-admox-green"
+               />
+               <div className="flex justify-between mt-1 text-[8px] text-gray-500 font-mono">
+                  <span>MACRO</span>
+                  <span>∞</span>
+               </div>
+            </div>
+
           </div>
         </div>
       </section>
@@ -337,21 +365,21 @@ function App() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-4 translate-y-12">
                    <div className="bg-gray-800 rounded-2xl h-64 w-full overflow-hidden relative group">
-                      <img src="https://picsum.photos/400/600?random=1" alt="Portfolio" className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-500" />
+                      <img loading="lazy" src="https://picsum.photos/400/600?random=1" alt="Portfolio" className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-500" />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-4">
                         <span className="text-white font-bold">Brand Identity</span>
                       </div>
                    </div>
                    <div className="bg-gray-800 rounded-2xl h-48 w-full overflow-hidden relative group">
-                      <img src="https://picsum.photos/400/400?random=2" alt="Portfolio" className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-500" />
+                      <img loading="lazy" src="https://picsum.photos/400/400?random=2" alt="Portfolio" className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-500" />
                    </div>
                 </div>
                 <div className="space-y-4">
                    <div className="bg-gray-800 rounded-2xl h-48 w-full overflow-hidden relative group">
-                      <img src="https://picsum.photos/400/400?random=3" alt="Portfolio" className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-500" />
+                      <img loading="lazy" src="https://picsum.photos/400/400?random=3" alt="Portfolio" className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-500" />
                    </div>
                    <div className="bg-gray-800 rounded-2xl h-64 w-full overflow-hidden relative group">
-                      <img src="https://picsum.photos/400/600?random=4" alt="Portfolio" className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-500" />
+                      <img loading="lazy" src="https://picsum.photos/400/600?random=4" alt="Portfolio" className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-500" />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-4">
                         <span className="text-white font-bold">Video Production</span>
                       </div>
@@ -396,7 +424,7 @@ function App() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12 opacity-70 hover:opacity-100 transition-opacity duration-500">
              {[5, 6, 7, 8].map((n) => (
                <div key={n} className="aspect-square bg-gray-800 rounded-lg overflow-hidden relative group cursor-pointer">
-                 <img src={`https://picsum.photos/300/300?random=${n}`} alt="Insta" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                 <img loading="lazy" src={`https://picsum.photos/300/300?random=${n}`} alt="Insta" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                    <Instagram className="text-white" size={32} />
                  </div>
